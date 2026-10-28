@@ -37,16 +37,17 @@ interface CalendarEventItem {
 const plugins = [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin];
 
 // Auto-assign schedule colors based on reference palette:
-// Purple, Green, Amber, Pink, Blue, Sky, Orange, Teal
+// Amber, Pink, Purple, Green, Blue, Sky, Orange, Teal, Rose
 const NTH_CHILD_COLORS = [
-  '#8b5cf6', // 1st: Purple (Team Meeting)
-  '#10b981', // 2nd: Green (Code Review / Design Review)
-  '#f59e0b', // 3rd: Amber / Yellow (UI Discussion)
-  '#ec4899', // 4th: Pink / Magenta (Client Call)
-  '#3b82f6', // 5th: Blue (Project Update)
-  '#0ea5e9', // 6th: Sky Blue (Frontend Work)
-  '#ff7a45', // 7th: Orange
-  '#0c8388', // 8th: Teal
+  '#f59e0b', // Amber / Yellow
+  '#ec4899', // Pink / Magenta
+  '#8b5cf6', // Purple
+  '#10b981', // Green
+  '#3b82f6', // Blue
+  '#0ea5e9', // Sky Blue
+  '#ff7a45', // Orange
+  '#0c8388', // Teal
+  '#e11d48', // Rose
 ];
 
 export default function Calendar() {
@@ -176,8 +177,8 @@ export default function Calendar() {
     const startDateTime = `${newDate}T${newStartTime}:00`;
     const endDateTime = `${newDate}T${newEndTime}:00`;
 
-    // Automatically assign color based on nth-child: 1st=Purple, 2nd=Green, 3rd=Amber, etc.
-    const autoColor = NTH_CHILD_COLORS[events.length % NTH_CHILD_COLORS.length];
+    // Randomly assign a vibrant color from the palette
+    const randomColor = NTH_CHILD_COLORS[Math.floor(Math.random() * NTH_CHILD_COLORS.length)];
 
     const res = await fetch('/api/events', {
       method: 'POST',
@@ -186,7 +187,7 @@ export default function Calendar() {
         title: newTitle,
         start: startDateTime,
         end: endDateTime,
-        color: autoColor,
+        color: randomColor,
         meetingUrl: newMeetingUrl,
         guestsCount: 1,
       }),
@@ -206,44 +207,72 @@ export default function Calendar() {
     fetchEvents();
   };
 
+  // Dynamic color theme resolver: maps each event to random, distinctive colors
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const getEventTheme = (event: any) => {
+    const colorThemes = [
+      { cardClass: styles.cardAmber, dotClass: styles.dotAmber, hex: '#f59e0b' },
+      { cardClass: styles.cardPink, dotClass: styles.dotPink, hex: '#ec4899' },
+      { cardClass: styles.cardPurple, dotClass: styles.dotPurple, hex: '#8b5cf6' },
+      { cardClass: styles.cardGreen, dotClass: styles.dotGreen, hex: '#10b981' },
+      { cardClass: styles.cardBlue, dotClass: styles.dotBlue, hex: '#3b82f6' },
+      { cardClass: styles.cardSky, dotClass: styles.dotSky, hex: '#0ea5e9' },
+      { cardClass: styles.cardOrange, dotClass: styles.dotOrange, hex: '#ff7a45' },
+      { cardClass: styles.cardTeal, dotClass: styles.dotTeal, hex: '#0c8388' },
+      { cardClass: styles.cardRose, dotClass: styles.dotRose, hex: '#e11d48' },
+    ];
+
+    const rawColor = (event.backgroundColor || event.borderColor || '').toLowerCase();
+
+    // Check specific distinct colors
+    if (rawColor === '#10b981' || rawColor === '#2e8b57' || (rawColor.includes('green') && !rawColor.includes('teal'))) {
+      return colorThemes[3]; // Green
+    }
+    if (rawColor === '#f59e0b' || rawColor === '#ff9800' || rawColor.includes('amber') || rawColor.includes('yellow')) {
+      return colorThemes[0]; // Amber
+    }
+    if (rawColor === '#ec4899' || rawColor.includes('pink') || rawColor.includes('magenta')) {
+      return colorThemes[1]; // Pink
+    }
+    if (rawColor === '#3b82f6' || rawColor === '#2563eb') {
+      return colorThemes[4]; // Blue
+    }
+    if (rawColor === '#0ea5e9' || rawColor.includes('sky')) {
+      return colorThemes[5]; // Sky Blue
+    }
+    if (rawColor === '#ff7a45' || rawColor === '#ea8a47' || (rawColor.includes('orange') && !rawColor.includes('yellow'))) {
+      return colorThemes[6]; // Orange
+    }
+    if (rawColor === '#0c8388' || rawColor.includes('teal')) {
+      return colorThemes[7]; // Teal
+    }
+    if (rawColor === '#e11d48' || rawColor.includes('rose') || rawColor.includes('red')) {
+      return colorThemes[8]; // Rose
+    }
+
+    // High-entropy hashing from title + id to guarantee varied, random colors for each task
+    const title = (event.title || '').trim().toLowerCase();
+    const id = String(event.id || '');
+    const combined = id + title;
+
+    let hash = 0;
+    for (let i = 0; i < combined.length; i++) {
+      hash = combined.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    let charSum = 0;
+    for (let i = 0; i < title.length; i++) {
+      charSum += title.charCodeAt(i) * (i + 1);
+    }
+
+    const idx = Math.abs(hash + charSum) % colorThemes.length;
+    return colorThemes[idx];
+  };
+
   // Custom Event Content: matching Reference UI (Card with accent stripe, dot + title, time underneath)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const renderEventContent = (eventInfo: any) => {
     const event = eventInfo.event;
-    const color = (event.backgroundColor || event.borderColor || '#8b5cf6').toLowerCase();
-
-    // Map color to matching card and dot classes
-    let cardClass = styles.cardPurple;
-    let dotClass = styles.dotPurple;
-
-    if (color === '#8b5cf6' || color.includes('purple')) {
-      cardClass = styles.cardPurple;
-      dotClass = styles.dotPurple;
-    } else if (color === '#10b981' || color === '#2e8b57' || color.includes('green')) {
-      cardClass = styles.cardGreen;
-      dotClass = styles.dotGreen;
-    } else if (color === '#f59e0b' || color.includes('amber') || color.includes('yellow')) {
-      cardClass = styles.cardAmber;
-      dotClass = styles.dotAmber;
-    } else if (color === '#ec4899' || color.includes('pink') || color.includes('magenta')) {
-      cardClass = styles.cardPink;
-      dotClass = styles.dotPink;
-    } else if (color === '#3b82f6' || color.includes('blue')) {
-      cardClass = styles.cardBlue;
-      dotClass = styles.dotBlue;
-    } else if (color === '#0ea5e9' || color.includes('sky')) {
-      cardClass = styles.cardSky;
-      dotClass = styles.dotSky;
-    } else if (color === '#ff7a45' || color === '#ea8a47' || color.includes('orange')) {
-      cardClass = styles.cardOrange;
-      dotClass = styles.dotOrange;
-    } else if (color === '#0c8388' || color.includes('teal')) {
-      cardClass = styles.cardTeal;
-      dotClass = styles.dotTeal;
-    } else if (color === '#e11d48' || color.includes('rose') || color.includes('red')) {
-      cardClass = styles.cardRose;
-      dotClass = styles.dotRose;
-    }
+    const theme = getEventTheme(event);
 
     // Format time: e.g. 10:00 - 11:00
     let timeText = 'All Day';
@@ -258,9 +287,9 @@ export default function Calendar() {
     }
 
     return (
-      <div className={`${styles.eventCard} ${cardClass}`}>
+      <div className={`${styles.eventCard} ${theme.cardClass}`}>
         <div className={styles.eventCardHeader}>
-          <span className={`${styles.eventDot} ${dotClass}`} />
+          <span className={`${styles.eventDot} ${theme.dotClass}`} />
           <span className={styles.eventTitleText} title={event.title}>
             {event.title || 'Untitled Event'}
           </span>
@@ -319,7 +348,7 @@ export default function Calendar() {
 
         {/* Right Action Section: View Switcher (Month, Week, Day) + Settings Button */}
         <div className={styles.headerActions}>
-          <div className={styles.viewSwitcher}>
+          {/* <div className={styles.viewSwitcher}>
             <button
               type="button"
               className={`${styles.viewTab} ${currentView === 'dayGridMonth' ? styles.viewTabActive : ''}`}
@@ -341,7 +370,7 @@ export default function Calendar() {
             >
               Day
             </button>
-          </div>
+          </div> */}
 
           <button
             type="button"
