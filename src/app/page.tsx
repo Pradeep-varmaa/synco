@@ -1,5 +1,13 @@
-import Calendar from '@/components/calendar/calendar';
+'use client'
+
+import{useRouter} from 'next/navigation'
+import { useEffect } from 'react'
 
 export default function Home() {
-  return <Calendar />;
+  const router = useRouter()
+
+  useEffect(() => {
+    router.push('/dashboard')
+  }, [router])
+  return null
 }

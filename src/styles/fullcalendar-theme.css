@@ -1,101 +1,112 @@
-/* SYNCO FullCalendar Custom Theme Overrides - UP THREE Fiery & Metallic Chrome Theme */
+/* SYNCO FullCalendar Modern Clean Theme - Matching Reference UI */
 
 .fc {
-  --fc-border-color: #e2e8f0;
+  --fc-border-color: #f1f5f9;
   --fc-page-bg-color: #ffffff;
-  --fc-today-bg-color: #fffaf0;
+  --fc-today-bg-color: #fff7ed;
   --fc-neutral-bg-color: #f8fafc;
-  --fc-list-event-hover-bg-color: #fff3e0;
-  font-family: var(--font-family);
-  font-size: var(--font-size-sm);
-  color: var(--color-text-main);
+  --fc-list-event-hover-bg-color: #fff7ed;
+  font-family: inherit;
+  font-size: 0.85rem;
+  color: #1e293b;
   height: 100% !important;
 }
 
-/* Hide default FullCalendar header because we use our custom branded toolbar */
+/* Hide default FullCalendar header because we use custom toolbar */
 .fc .fc-toolbar {
   display: none !important;
 }
 
-/* Day Headers (Mon, Tue, Wed, Thu, Fri, Sat, Sun) */
+/* Day-of-Week Column Headers (Sun, Mon, Tue, Wed, Thu, Fri, Sat) */
+.fc .fc-col-header {
+  border-bottom: 1px solid #f1f5f9 !important;
+}
+
 .fc .fc-col-header-cell {
   background-color: #ffffff;
-  padding: 8px 0 !important;
-  border-bottom: 1px solid var(--color-border) !important;
+  padding: 12px 0 !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+  border-left: 1px solid #f8fafc !important;
+  border-right: 1px solid #f8fafc !important;
 }
 
 .fc .fc-col-header-cell-cushion {
   color: #475569;
-  font-weight: 700;
-  font-size: 0.78rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: normal;
+  text-transform: capitalize !important;
   text-decoration: none !important;
 }
 
-/* Day Numbers & Cell Body (Compressed) */
+/* Day Cell Top & Number Styling */
 .fc .fc-daygrid-day-top {
   flex-direction: row;
-  padding: 4px 6px !important;
+  justify-content: flex-start;
+  padding: 8px 10px 4px 10px !important;
 }
 
 .fc .fc-daygrid-day-number {
-  color: #64748b;
-  font-size: 0.78rem;
-  font-weight: 600;
+  color: #1e293b;
+  font-size: 0.88rem;
+  font-weight: 700;
   text-decoration: none !important;
-  width: 22px;
-  height: 22px;
-  display: flex;
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: var(--radius-full);
-  transition: all var(--transition-fast);
+  border-radius: 50%;
+  transition: all 0.15s ease;
 }
 
-/* Other month days subtle color */
+/* Days belonging to previous/next month */
 .fc .fc-day-other .fc-daygrid-day-number {
-  color: #cbd5e1;
+  color: #cbd5e1 !important;
+  font-weight: 500;
 }
 
-/* Highlight "Today" cell number with Fiery Amber Circular Pill */
+/* Highlight "Today" (Circular Orange Badge & Warm Peach Tint) */
 .fc .fc-day-today {
-  background-color: #fffaf5 !important;
+  background: linear-gradient(180deg, #fff7ed 0%, #ffffff 100%) !important;
 }
 
 .fc .fc-day-today .fc-daygrid-day-number {
-  background: linear-gradient(135deg, #ff9800 0%, #ff5722 100%);
+  background: #ff5722 !important;
   color: #ffffff !important;
   font-weight: 700;
-  box-shadow: 0 2px 8px rgba(255, 87, 34, 0.45);
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(255, 87, 34, 0.4);
 }
 
-/* Grid Borders - Crisp Metallic Slate */
+/* Crisp Clean Light Grid Borders */
 .fc-theme-standard td, 
 .fc-theme-standard th {
-  border: 1px solid #edf2f7 !important;
+  border: 1px solid #f1f5f9 !important;
 }
 
 .fc-theme-standard .fc-scrollgrid {
-  border: 1px solid #e2e8f0 !important;
-  border-radius: var(--radius-md);
+  border: 1px solid #f1f5f9 !important;
+  border-radius: 14px;
   overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  box-shadow: none;
 }
 
-/* Compressed Day Cell Frame */
+/* Day Cell Frame */
 .fc .fc-daygrid-day-frame {
-  min-height: 0 !important;
-  padding: 2px !important;
+  min-height: 85px !important;
+  padding: 0 !important;
+  box-sizing: border-box;
 }
 
-.fc .fc-daygrid-body {
-  min-height: 0 !important;
+.fc .fc-daygrid-day-events {
+  margin-top: 2px !important;
+  padding-bottom: 4px !important;
 }
 
 /* Event Capsule & Default Overrides */
 .fc-daygrid-event-harness {
-  margin: 2px 4px !important;
+  margin: 3px 6px !important;
 }
 
 .fc-daygrid-event {
@@ -113,7 +124,7 @@
 
 /* TimeGrid (Week/Day) Styling */
 .fc .fc-timegrid-slot {
-  height: 42px !important;
+  height: 48px !important;
   border-color: #f1f5f9;
 }
 
@@ -124,18 +135,18 @@
 
 .fc .fc-timegrid-axis-cushion,
 .fc .fc-timegrid-slot-label-cushion {
-  font-size: 0.72rem;
+  font-size: 0.74rem;
   font-weight: 500;
-  color: var(--color-text-muted);
+  color: #64748b;
 }
 
 .fc .fc-timegrid-now-indicator-line {
-  border-color: var(--color-primary);
+  border-color: #ff5722;
   border-width: 2px;
 }
 
 .fc .fc-timegrid-now-indicator-arrow {
-  border-color: var(--color-primary);
+  border-color: #ff5722;
 }
 
 /* List / Agenda View */
@@ -147,9 +158,9 @@
 
 .fc .fc-list-day-cushion {
   background-color: #f8fafc !important;
-  color: var(--color-text-main);
+  color: #1e293b;
   font-weight: 600;
-  font-size: var(--font-size-sm);
+  font-size: 0.85rem;
   padding: 10px 16px !important;
 }
 
@@ -159,16 +170,16 @@
 }
 
 .fc .fc-list-event:hover td {
-  background-color: #fff3e0 !important;
+  background-color: #fff7ed !important;
 }
 
 .fc .fc-list-event-time {
   font-weight: 600;
   color: #ff5722;
-  font-size: 0.78rem;
+  font-size: 0.8rem;
 }
 
 .fc .fc-list-event-title a {
   font-weight: 600;
-  color: var(--color-text-main);
+  color: #1e293b;
 }

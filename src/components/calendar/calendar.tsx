@@ -6,7 +6,7 @@ import dayGridPlugin from '@fullcalendar/react/daygrid';
 import timeGridPlugin from '@fullcalendar/react/timegrid';
 import listPlugin from '@fullcalendar/react/list';
 import interactionPlugin from '@fullcalendar/react/interaction';
-import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Settings, X } from 'lucide-react';
 
 import '@fullcalendar/react/skeleton.css';
 import '@/styles/fullcalendar-theme.css';
@@ -36,15 +36,17 @@ interface CalendarEventItem {
 
 const plugins = [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin];
 
-// Auto-assign schedule colors based on nth-child sequence:
-// 1st child: Green, 2nd: Orange, 3rd: Purple, 4th: Teal, 5th: Blue, 6th: Rose
+// Auto-assign schedule colors based on reference palette:
+// Purple, Green, Amber, Pink, Blue, Sky, Orange, Teal
 const NTH_CHILD_COLORS = [
-  '#2e8b57', // 1st child: Green
-  '#ea8a47', // 2nd child: Orange
-  '#7d6ecf', // 3rd child: Purple
-  '#0c8388', // 4th child: Teal
-  '#2563eb', // 5th child: Blue
-  '#e11d48', // 6th child: Rose
+  '#8b5cf6', // 1st: Purple (Team Meeting)
+  '#10b981', // 2nd: Green (Code Review / Design Review)
+  '#f59e0b', // 3rd: Amber / Yellow (UI Discussion)
+  '#ec4899', // 4th: Pink / Magenta (Client Call)
+  '#3b82f6', // 5th: Blue (Project Update)
+  '#0ea5e9', // 6th: Sky Blue (Frontend Work)
+  '#ff7a45', // 7th: Orange
+  '#0c8388', // 8th: Teal
 ];
 
 export default function Calendar() {
@@ -55,7 +57,7 @@ export default function Calendar() {
   const [activeEvent, setActiveEvent] = useState<SelectedEventState | null>(null);
   const [events, setEvents] = useState<CalendarEventItem[]>([]);
 
-  // New Event Modal State (auto-colored, no color prompt)
+  // New Event Modal State
   const [modalOpen, setModalOpen] = useState(false);
   const [newTitle, setNewTitle] = useState('');
   const [newDate, setNewDate] = useState('');
@@ -106,6 +108,13 @@ export default function Calendar() {
     }
   };
 
+  const handleToday = () => {
+    if (calRef.current) {
+      calRef.current.getApi().today();
+      updateTitleFromApi();
+    }
+  };
+
   const handleViewChange = (view: 'dayGridMonth' | 'timeGridWeek' | 'timeGridDay' | 'listWeek') => {
     setCurrentView(view);
     if (calRef.current) {
@@ -123,7 +132,7 @@ export default function Calendar() {
       const start = event.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
       if (event.end) {
         const end = event.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
-        timeRange = `${start} to ${end}`;
+        timeRange = `${start} - ${end}`;
       } else {
         timeRange = start;
       }
@@ -133,9 +142,9 @@ export default function Calendar() {
       id: event.id,
       title: event.title || 'Untitled Event',
       timeRange,
-      meetingUrl: event.extendedProps.meetingUrl || '',
-      guestsCount: event.extendedProps.guestsCount || 1,
-      color: event.backgroundColor || '#0c8388',
+      meetingUrl: event.extendedProps?.meetingUrl || '',
+      guestsCount: event.extendedProps?.guestsCount || 1,
+      color: event.backgroundColor || '#8b5cf6',
     });
   };
 
@@ -167,7 +176,7 @@ export default function Calendar() {
     const startDateTime = `${newDate}T${newStartTime}:00`;
     const endDateTime = `${newDate}T${newEndTime}:00`;
 
-    // Automatically assign color based on nth-child: 1st=Green, 2nd=Orange, 3rd=Purple, etc.
+    // Automatically assign color based on nth-child: 1st=Purple, 2nd=Green, 3rd=Amber, etc.
     const autoColor = NTH_CHILD_COLORS[events.length % NTH_CHILD_COLORS.length];
 
     const res = await fetch('/api/events', {
@@ -197,29 +206,46 @@ export default function Calendar() {
     fetchEvents();
   };
 
-  // Custom Event Content: Just show the scheduled time on the calendar + hover effect & colors
+  // Custom Event Content: matching Reference UI (Card with accent stripe, dot + title, time underneath)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const renderEventContent = (eventInfo: any) => {
     const event = eventInfo.event;
-    const color = (event.backgroundColor || event.borderColor || '#0c8388').toLowerCase();
+    const color = (event.backgroundColor || event.borderColor || '#8b5cf6').toLowerCase();
 
-    // Map color to vibrant CSS class (1st child=Green, 2nd=Orange, 3rd=Purple, etc.)
-    let colorClass = styles.scheduleGreen;
-    if (color === '#2e8b57' || color.includes('green')) {
-      colorClass = styles.scheduleGreen;
-    } else if (color === '#ea8a47' || color.includes('orange')) {
-      colorClass = styles.scheduleOrange;
-    } else if (color === '#7d6ecf' || color.includes('purple')) {
-      colorClass = styles.schedulePurple;
+    // Map color to matching card and dot classes
+    let cardClass = styles.cardPurple;
+    let dotClass = styles.dotPurple;
+
+    if (color === '#8b5cf6' || color.includes('purple')) {
+      cardClass = styles.cardPurple;
+      dotClass = styles.dotPurple;
+    } else if (color === '#10b981' || color === '#2e8b57' || color.includes('green')) {
+      cardClass = styles.cardGreen;
+      dotClass = styles.dotGreen;
+    } else if (color === '#f59e0b' || color.includes('amber') || color.includes('yellow')) {
+      cardClass = styles.cardAmber;
+      dotClass = styles.dotAmber;
+    } else if (color === '#ec4899' || color.includes('pink') || color.includes('magenta')) {
+      cardClass = styles.cardPink;
+      dotClass = styles.dotPink;
+    } else if (color === '#3b82f6' || color.includes('blue')) {
+      cardClass = styles.cardBlue;
+      dotClass = styles.dotBlue;
+    } else if (color === '#0ea5e9' || color.includes('sky')) {
+      cardClass = styles.cardSky;
+      dotClass = styles.dotSky;
+    } else if (color === '#ff7a45' || color === '#ea8a47' || color.includes('orange')) {
+      cardClass = styles.cardOrange;
+      dotClass = styles.dotOrange;
     } else if (color === '#0c8388' || color.includes('teal')) {
-      colorClass = styles.scheduleTeal;
-    } else if (color === '#2563eb' || color.includes('blue')) {
-      colorClass = styles.scheduleBlue;
+      cardClass = styles.cardTeal;
+      dotClass = styles.dotTeal;
     } else if (color === '#e11d48' || color.includes('rose') || color.includes('red')) {
-      colorClass = styles.scheduleRose;
+      cardClass = styles.cardRose;
+      dotClass = styles.dotRose;
     }
 
-    // Format time: only display the scheduled time
+    // Format time: e.g. 10:00 - 11:00
     let timeText = 'All Day';
     if (event.start) {
       const startStr = event.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
@@ -231,19 +257,15 @@ export default function Calendar() {
       }
     }
 
-    const guests = event.extendedProps?.guestsCount || 1;
-
     return (
-      <div className={styles.schedulePillWrapper}>
-        <div className={`${styles.schedulePill} ${colorClass}`}>
-          <span className={styles.scheduleTimeText}>{timeText}</span>
-        </div>
-        <div className={styles.scheduleHoverCard}>
-          <span className={styles.hoverCardTitle}>{event.title || 'Event'}</span>
-          <span className={styles.hoverCardMeta}>
-            {timeText} • {guests} guest{guests > 1 ? 's' : ''}
+      <div className={`${styles.eventCard} ${cardClass}`}>
+        <div className={styles.eventCardHeader}>
+          <span className={`${styles.eventDot} ${dotClass}`} />
+          <span className={styles.eventTitleText} title={event.title}>
+            {event.title || 'Untitled Event'}
           </span>
         </div>
+        <span className={styles.eventTimeText}>{timeText}</span>
       </div>
     );
   };
@@ -260,7 +282,7 @@ export default function Calendar() {
 
   return (
     <div className={styles.calendarCard}>
-      {/* Improvised Header Toolbar */}
+      {/* Header Toolbar matching Reference UI */}
       <div className={styles.calendarHeader}>
         <div className={styles.navGroup}>
           <div className={styles.navButtons}>
@@ -268,7 +290,8 @@ export default function Calendar() {
               type="button"
               className={styles.arrowButton}
               onClick={handlePrev}
-              aria-label="Previous Period"
+              aria-label="Previous Month"
+              title="Previous"
             >
               <ChevronLeft size={18} />
             </button>
@@ -276,48 +299,63 @@ export default function Calendar() {
               type="button"
               className={styles.arrowButton}
               onClick={handleNext}
-              aria-label="Next Period"
+              aria-label="Next Month"
+              title="Next"
             >
               <ChevronRight size={18} />
             </button>
           </div>
+
           <h2 className={styles.dateTitle}>{currentTitle}</h2>
+
+          <button
+            type="button"
+            className={styles.todayButton}
+            onClick={handleToday}
+          >
+            Today
+          </button>
         </div>
 
-        {/* 4 View Pills Switcher */}
-        {/* <div className={styles.viewSwitcher}>
+        {/* Right Action Section: View Switcher (Month, Week, Day) + Settings Button */}
+        <div className={styles.headerActions}>
+          <div className={styles.viewSwitcher}>
+            <button
+              type="button"
+              className={`${styles.viewTab} ${currentView === 'dayGridMonth' ? styles.viewTabActive : ''}`}
+              onClick={() => handleViewChange('dayGridMonth')}
+            >
+              Month
+            </button>
+            <button
+              type="button"
+              className={`${styles.viewTab} ${currentView === 'timeGridWeek' ? styles.viewTabActive : ''}`}
+              onClick={() => handleViewChange('timeGridWeek')}
+            >
+              Week
+            </button>
+            <button
+              type="button"
+              className={`${styles.viewTab} ${currentView === 'timeGridDay' ? styles.viewTabActive : ''}`}
+              onClick={() => handleViewChange('timeGridDay')}
+            >
+              Day
+            </button>
+          </div>
+
           <button
             type="button"
-            className={`${styles.viewPill} ${currentView === 'dayGridMonth' ? styles.viewPillActive : ''}`}
-            onClick={() => handleViewChange('dayGridMonth')}
+            className={styles.settingsButton}
+            onClick={() => setModalOpen(true)}
+            aria-label="New Event"
+            title="Create New Event"
           >
-            Month
+            <Settings size={18} />
           </button>
-          <button
-            type="button"
-            className={`${styles.viewPill} ${currentView === 'timeGridWeek' ? styles.viewPillActive : ''}`}
-            onClick={() => handleViewChange('timeGridWeek')}
-          >
-            Week
-          </button>
-          <button
-            type="button"
-            className={`${styles.viewPill} ${currentView === 'timeGridDay' ? styles.viewPillActive : ''}`}
-            onClick={() => handleViewChange('timeGridDay')}
-          >
-            Day
-          </button>
-          <button
-            type="button"
-            className={`${styles.viewPill} ${currentView === 'listWeek' ? styles.viewPillActive : ''}`}
-            onClick={() => handleViewChange('listWeek')}
-          >
-            Agenda
-          </button>
-        </div> */}
+        </div>
       </div>
 
-      {/* FullCalendar Component (Compressed to screen height) */}
+      {/* FullCalendar Component */}
       <div className={styles.calendarWrapper}>
         <FullCalendar
           ref={calRef}
@@ -385,28 +423,29 @@ export default function Calendar() {
         </>
       )}
 
-      {/* Schedule Event Modal with 6 Color Swatches */}
+      {/* Schedule Event Modal Dialog */}
       {modalOpen && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.modalContent}>
+        <div className={styles.modalBackdrop}>
+          <div className={styles.modalDialog}>
             <div className={styles.modalHeader}>
               <h3 className={styles.modalTitle}>Schedule New Event</h3>
               <button
                 type="button"
-                className={styles.closeButton}
+                className={styles.closeModalBtn}
                 onClick={() => setModalOpen(false)}
+                aria-label="Close"
               >
-                <X size={20} />
+                <X size={18} />
               </button>
             </div>
 
-            <form onSubmit={handleCreateEvent} className={styles.formGroup}>
+            <form onSubmit={handleCreateEvent} className={styles.modalForm}>
               <div className={styles.formGroup}>
                 <label className={styles.formLabel}>Event Title</label>
                 <input
                   type="text"
                   className={styles.formInput}
-                  placeholder="e.g. Design review"
+                  placeholder="e.g. Code Review"
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
                   required
@@ -424,9 +463,9 @@ export default function Calendar() {
                 />
               </div>
 
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Scheduled Time (Start - End)</label>
-                <div className={styles.timeInputsRow}>
+              <div className={styles.formRow}>
+                <div className={styles.formGroup}>
+                  <label className={styles.formLabel}>Start Time</label>
                   <input
                     type="time"
                     className={styles.formInput}
@@ -434,6 +473,9 @@ export default function Calendar() {
                     onChange={(e) => setNewStartTime(e.target.value)}
                     required
                   />
+                </div>
+                <div className={styles.formGroup}>
+                  <label className={styles.formLabel}>End Time</label>
                   <input
                     type="time"
                     className={styles.formInput}
@@ -458,13 +500,13 @@ export default function Calendar() {
               <div className={styles.modalFooter}>
                 <button
                   type="button"
-                  className={styles.cancelModalButton}
+                  className={styles.cancelBtn}
                   onClick={() => setModalOpen(false)}
                 >
                   Cancel
                 </button>
-                <button type="submit" className={styles.submitModalButton}>
-                  Save Schedule
+                <button type="submit" className={styles.saveBtn}>
+                  Save Event
                 </button>
               </div>
             </form>

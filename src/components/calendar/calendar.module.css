@@ -1,14 +1,14 @@
 .calendarCard {
-  background-color: var(--color-bg-surface);
-  border-radius: var(--radius-lg);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
-  border: 1px solid var(--color-border);
-  padding: 16px 20px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+  border: 1px solid #edf2f7;
+  padding: 18px 24px;
   position: relative;
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 110px);
-  min-height: 480px;
+  height: calc(100vh - 105px);
+  min-height: 520px;
   box-sizing: border-box;
 }
 
@@ -17,7 +17,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
   flex-wrap: wrap;
   gap: 12px;
   flex-shrink: 0;
@@ -26,7 +26,7 @@
 .navGroup {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
 }
 
 .navButtons {
@@ -36,67 +36,113 @@
 }
 
 .arrowButton {
-  width: 32px;
-  height: 32px;
-  border-radius: var(--radius-full);
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-text-main);
-  background-color: var(--color-bg-muted);
-  border: 1px solid var(--color-border);
-  transition: all var(--transition-fast);
+  color: #334155;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  transition: all 0.15s ease;
   cursor: pointer;
 }
 
 .arrowButton:hover {
-  background-color: var(--color-primary-light);
-  border-color: #ffcc80;
-  color: var(--color-primary);
-  transform: scale(1.05);
+  background-color: #f1f5f9;
+  border-color: #cbd5e1;
+  color: #ff5722;
+  transform: scale(1.03);
 }
 
 .dateTitle {
-  font-size: var(--font-size-xl);
+  font-size: 1.25rem;
   font-weight: 700;
-  color: var(--color-text-main);
+  color: #0f172a;
   letter-spacing: -0.02em;
+  margin: 0 4px;
 }
 
-/* View Switcher Pills */
+.todayButton {
+  border: 1.5px solid #ff7a45;
+  color: #ff5722;
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 6px 16px;
+  font-weight: 600;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.todayButton:hover {
+  background-color: #fff7ed;
+  border-color: #ff5722;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* View Switcher Container */
 .viewSwitcher {
   display: flex;
   align-items: center;
-  background-color: var(--color-bg-muted);
-  border: 1px solid var(--color-border);
+  background-color: #f1f5f9;
+  border: 1px solid #e2e8f0;
   padding: 3px;
-  border-radius: var(--radius-full);
+  border-radius: 12px;
   gap: 2px;
 }
 
-.viewPill {
-  padding: 5px 14px;
-  border-radius: var(--radius-full);
-  font-size: var(--font-size-xs);
-  font-weight: 600;
-  color: var(--color-text-muted);
-  transition: all var(--transition-fast);
+.viewTab {
+  padding: 6px 16px;
+  border-radius: 9px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #64748b;
+  background: transparent;
+  border: none;
+  transition: all 0.15s ease;
   cursor: pointer;
 }
 
-.viewPill:hover {
-  color: var(--color-text-main);
+.viewTab:hover {
+  color: #0f172a;
 }
 
-.viewPillActive {
-  background: linear-gradient(135deg, #ff9800 0%, #ff5722 100%);
+.viewTabActive {
+  background: linear-gradient(135deg, #ff7a45 0%, #ff5722 100%);
   color: #ffffff;
-  font-weight: 700;
-  box-shadow: 0 2px 8px rgba(255, 87, 34, 0.4);
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(255, 87, 34, 0.35);
 }
 
-.viewPillActive:hover {
+.viewTabActive:hover {
   color: #ffffff;
+}
+
+.settingsButton {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.settingsButton:hover {
+  background-color: #f1f5f9;
+  color: #ff5722;
+  border-color: #cbd5e1;
 }
 
 /* Calendar Grid Container */
@@ -108,298 +154,305 @@
   flex-direction: column;
 }
 
-/* Schedule Pill on Calendar (Showing Scheduled Time Only + Color + Hover Effect) */
-.schedulePillWrapper {
-  position: relative;
+/* Reference Event Card on Calendar */
+.eventCard {
   width: 100%;
-}
-
-.schedulePill {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2px 6px;
-  border-radius: 4px;
-  color: #ffffff;
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.01em;
-  cursor: pointer;
-  width: 100%;
-  height: 20px;
-  box-sizing: border-box;
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast), filter var(--transition-fast);
-  position: relative;
-  overflow: hidden;
-  user-select: none;
-}
-
-/* Hover Effect: elevation, glow, and brightness */
-.schedulePillWrapper:hover .schedulePill {
-  transform: translateY(-2px) scale(1.02);
-  filter: brightness(1.1);
-  z-index: 50;
-}
-
-/* Vibrant Metallic & Fiery Schedule Colors */
-.scheduleOrange {
-  background: linear-gradient(135deg, #ff9800 0%, #ff5722 100%);
-  box-shadow: 0 2px 5px rgba(255, 87, 34, 0.35);
-}
-
-.schedulePillWrapper:hover .scheduleOrange {
-  box-shadow: 0 4px 14px rgba(255, 87, 34, 0.55);
-}
-
-.scheduleTeal {
-  background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
-  box-shadow: 0 2px 5px rgba(30, 41, 59, 0.35);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-}
-
-.schedulePillWrapper:hover .scheduleTeal {
-  box-shadow: 0 4px 14px rgba(30, 41, 59, 0.55);
-}
-
-.scheduleGreen {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  box-shadow: 0 2px 5px rgba(16, 185, 129, 0.35);
-}
-
-.schedulePillWrapper:hover .scheduleGreen {
-  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.55);
-}
-
-.schedulePurple {
-  background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
-  box-shadow: 0 2px 5px rgba(139, 92, 246, 0.35);
-}
-
-.schedulePillWrapper:hover .schedulePurple {
-  box-shadow: 0 4px 14px rgba(139, 92, 246, 0.55);
-}
-
-.scheduleBlue {
-  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-  box-shadow: 0 2px 5px rgba(37, 99, 235, 0.35);
-}
-
-.schedulePillWrapper:hover .scheduleBlue {
-  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.55);
-}
-
-.scheduleRose {
-  background: linear-gradient(135deg, #ff3d00 0%, #c62828 100%);
-  box-shadow: 0 2px 5px rgba(255, 61, 0, 0.35);
-}
-
-.schedulePillWrapper:hover .scheduleRose {
-  box-shadow: 0 4px 14px rgba(255, 61, 0, 0.55);
-}
-
-.scheduleTimeText {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-variant-numeric: tabular-nums;
-  line-height: 1;
-}
-
-/* Hover Tooltip / Floating Card on Hover */
-.scheduleHoverCard {
-  position: absolute;
-  bottom: calc(100% + 6px);
-  left: 50%;
-  transform: translateX(-50%) translateY(4px);
-  background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
-  color: #ffffff;
-  padding: 6px 10px;
-  border-radius: var(--radius-sm);
-  font-size: 0.72rem;
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.3), 0 0 10px rgba(255, 87, 34, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  pointer-events: none;
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  white-space: nowrap;
-  z-index: 100;
+  background: #ffffff;
+  border-radius: 6px;
+  border: 1px solid #f1f5f9;
+  border-left: 3.5px solid #0ea5e9;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  padding: 4px 6px;
   display: flex;
   flex-direction: column;
   gap: 2px;
+  cursor: pointer;
+  box-sizing: border-box;
+  overflow: hidden;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.scheduleHoverCard::after {
-  content: '';
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  border-width: 5px;
-  border-style: solid;
-  border-color: #0f172a transparent transparent transparent;
+.eventCard:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
 }
 
-.schedulePillWrapper:hover .scheduleHoverCard {
-  opacity: 1;
-  visibility: visible;
-  transform: translateX(-50%) translateY(0);
+/* Left Border Accent Colors */
+.cardPurple {
+  border-left-color: #8b5cf6;
 }
 
-.hoverCardTitle {
-  font-weight: 700;
-  color: #ffffff;
+.cardGreen {
+  border-left-color: #10b981;
 }
 
-.hoverCardMeta {
-  color: #cbd5e1;
-  font-size: 0.68rem;
+.cardAmber {
+  border-left-color: #f59e0b;
 }
 
-/* Event Popover Card (Matching the Screenshot: Join Meet / Edit) */
+.cardPink {
+  border-left-color: #ec4899;
+}
+
+.cardBlue {
+  border-left-color: #3b82f6;
+}
+
+.cardSky {
+  border-left-color: #0ea5e9;
+}
+
+.cardOrange {
+  border-left-color: #ff7a45;
+}
+
+.cardRose {
+  border-left-color: #e11d48;
+}
+
+.cardTeal {
+  border-left-color: #0c8388;
+}
+
+/* Card Header: Dot + Title */
+.eventCardHeader {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+}
+
+.eventDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background-color: #0ea5e9;
+}
+
+.dotPurple {
+  background-color: #8b5cf6;
+}
+
+.dotGreen {
+  background-color: #10b981;
+}
+
+.dotAmber {
+  background-color: #f59e0b;
+}
+
+.dotPink {
+  background-color: #ec4899;
+}
+
+.dotBlue {
+  background-color: #3b82f6;
+}
+
+.dotSky {
+  background-color: #0ea5e9;
+}
+
+.dotOrange {
+  background-color: #ff7a45;
+}
+
+.dotRose {
+  background-color: #e11d48;
+}
+
+.dotTeal {
+  background-color: #0c8388;
+}
+
+.eventTitleText {
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: #1e293b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+
+/* Card Time Text */
+.eventTimeText {
+  font-size: 0.67rem;
+  color: #64748b;
+  font-weight: 500;
+  padding-left: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+
+/* Event Popover Card (Join Meet / Edit / Delete) */
 .popoverBackdrop {
   position: fixed;
-  inset: 0;
-  z-index: 80;
-  background-color: rgba(15, 23, 42, 0.3);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  background-color: rgba(15, 23, 42, 0.25);
   backdrop-filter: blur(2px);
 }
 
 .eventPopover {
   position: fixed;
-  z-index: 90;
-  width: 300px;
-  top: 40%;
+  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: var(--color-bg-surface);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
-  box-shadow: var(--shadow-hover-card);
-  padding: 20px;
+  width: 90%;
+  max-width: 380px;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 22px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+  border: 1px solid #e2e8f0;
+  z-index: 1001;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  animation: popoverFadeIn 0.2s ease-out;
-}
-
-@keyframes popoverFadeIn {
-  from {
-    opacity: 0;
-    transform: translate(-50%, -46%) scale(0.96);
-  }
-  to {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
+  gap: 14px;
 }
 
 .popoverTitle {
-  font-size: var(--font-size-base);
+  font-size: 1.1rem;
   font-weight: 700;
-  color: var(--color-text-main);
+  color: #0f172a;
+  margin: 0;
 }
 
 .popoverMeta {
-  font-size: var(--font-size-xs);
-  color: var(--color-text-muted);
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: #64748b;
 }
 
 .popoverActions {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-top: 6px;
+  gap: 10px;
+  margin-top: 8px;
 }
 
 .joinMeetButton {
-  background: linear-gradient(135deg, #ff9800 0%, #ff5722 100%);
+  flex: 1;
+  background: linear-gradient(135deg, #ff7a45 0%, #ff5722 100%);
   color: #ffffff;
-  font-size: var(--font-size-xs);
-  font-weight: 700;
-  padding: 8px 18px;
-  border-radius: var(--radius-full);
-  box-shadow: 0 2px 8px rgba(255, 87, 34, 0.35);
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
   text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  padding: 9px 14px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+  transition: opacity 0.15s;
 }
 
 .joinMeetButton:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(255, 87, 34, 0.45);
+  opacity: 0.92;
 }
 
 .editButton {
-  font-size: var(--font-size-xs);
+  padding: 9px 14px;
+  border-radius: 8px;
+  background-color: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  color: #334155;
+  font-size: 0.85rem;
   font-weight: 600;
-  color: var(--color-primary);
   cursor: pointer;
-  padding: 6px 10px;
+  transition: all 0.15s;
 }
 
 .editButton:hover {
-  text-decoration: underline;
+  background-color: #e2e8f0;
 }
 
 .deleteButton {
-  font-size: var(--font-size-xs);
+  padding: 9px 14px;
+  border-radius: 8px;
+  background-color: #fee2e2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  font-size: 0.85rem;
   font-weight: 600;
-  color: var(--color-danger);
   cursor: pointer;
-  margin-left: auto;
+  transition: all 0.15s;
 }
 
-/* Event Modal Dialog */
-.modalOverlay {
+.deleteButton:hover {
+  background-color: #fca5a5;
+}
+
+/* Modal Backdrops & Dialogs */
+.modalBackdrop {
   position: fixed;
-  inset: 0;
-  background-color: rgba(15, 23, 42, 0.45);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(15, 23, 42, 0.4);
   backdrop-filter: blur(4px);
+  z-index: 1050;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 100;
-  padding: 20px;
+  padding: 16px;
 }
 
-.modalContent {
-  background-color: var(--color-bg-surface);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
+.modalDialog {
+  background: #ffffff;
+  border-radius: 16px;
   width: 100%;
-  max-width: 480px;
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  border: 1px solid var(--color-border);
+  max-width: 440px;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.15);
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
 }
 
 .modalHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 18px 22px;
+  border-bottom: 1px solid #f1f5f9;
 }
 
 .modalTitle {
-  font-size: var(--font-size-lg);
+  font-size: 1.1rem;
   font-weight: 700;
-  color: var(--color-text-main);
+  color: #0f172a;
+  margin: 0;
 }
 
-.closeButton {
-  color: var(--color-text-muted);
+.closeModalBtn {
+  background: transparent;
+  border: none;
+  color: #64748b;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 6px;
+  transition: all 0.15s;
 }
 
-.closeButton:hover {
-  color: var(--color-text-main);
+.closeModalBtn:hover {
+  background-color: #f1f5f9;
+  color: #0f172a;
+}
+
+.modalForm {
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .formGroup {
@@ -408,129 +461,81 @@
   gap: 6px;
 }
 
-.timeInputsRow {
-  display: flex;
-  gap: 10px;
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
 }
 
 .formLabel {
-  font-size: var(--font-size-xs);
+  font-size: 0.8rem;
   font-weight: 600;
-  color: var(--color-text-muted);
-  text-transform: uppercase;
+  color: #334155;
 }
 
 .formInput {
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
   padding: 9px 12px;
-  font-size: var(--font-size-sm);
-  outline: none;
+  border-radius: 8px;
+  border: 1.5px solid #e2e8f0;
+  font-size: 0.88rem;
+  color: #0f172a;
   background-color: #ffffff;
-  color: var(--color-text-main);
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
-  width: 100%;
+  outline: none;
+  transition: border-color 0.15s;
 }
 
 .formInput:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(255, 87, 34, 0.15);
-}
-
-/* 6 Schedule Color Swatches */
-.colorPickerGroup {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 6px;
-}
-
-.colorOption {
-  width: 30px;
-  height: 30px;
-  border-radius: var(--radius-full);
-  cursor: pointer;
-  border: 2px solid transparent;
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
-}
-
-.colorOption:hover {
-  transform: scale(1.1);
-}
-
-.colorOptionSelected {
-  transform: scale(1.18);
-  border-color: var(--color-text-main);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
-}
-
-.colorOptionTeal {
-  background-color: #334155;
-}
-
-.colorOptionOrange {
-  background-color: #ff5722;
-}
-
-.colorOptionPurple {
-  background-color: #7c3aed;
-}
-
-.colorOptionGreen {
-  background-color: #059669;
-}
-
-.colorOptionBlue {
-  background-color: #2563eb;
-}
-
-.colorOptionRose {
-  background-color: #ff3d00;
+  border-color: #ff5722;
 }
 
 .modalFooter {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 12px;
-  margin-top: 10px;
+  gap: 10px;
+  padding: 16px 22px;
+  border-top: 1px solid #f1f5f9;
+  background-color: #f8fafc;
 }
 
-.cancelModalButton {
+.cancelBtn {
   padding: 8px 16px;
-  border-radius: var(--radius-sm);
-  font-size: var(--font-size-sm);
-  font-weight: 500;
-  color: var(--color-text-muted);
+  border-radius: 8px;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  color: #475569;
+  font-size: 0.85rem;
+  font-weight: 600;
   cursor: pointer;
+  transition: all 0.15s;
 }
 
-.cancelModalButton:hover {
-  background-color: var(--color-bg-muted);
+.cancelBtn:hover {
+  background-color: #f1f5f9;
 }
 
-.submitModalButton {
-  background: linear-gradient(135deg, #ff9800 0%, #ff5722 100%);
+.saveBtn {
+  padding: 8px 18px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #ff7a45 0%, #ff5722 100%);
+  border: none;
   color: #ffffff;
-  padding: 8px 20px;
-  border-radius: var(--radius-sm);
-  font-size: var(--font-size-sm);
-  font-weight: 700;
+  font-size: 0.85rem;
+  font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(255, 87, 34, 0.35);
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  box-shadow: 0 2px 6px rgba(255, 87, 34, 0.35);
+  transition: opacity 0.15s;
 }
 
-.submitModalButton:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(255, 87, 34, 0.45);
+.saveBtn:hover {
+  opacity: 0.92;
 }
 
 @media (max-width: 768px) {
   .calendarCard {
+    padding: 14px 14px;
     height: auto;
-    min-height: auto;
-    padding: 14px;
+    min-height: calc(100vh - 120px);
   }
 
   .calendarHeader {
@@ -538,13 +543,8 @@
     align-items: flex-start;
   }
 
-  .viewSwitcher {
+  .headerActions {
     width: 100%;
     justify-content: space-between;
-  }
-
-  .viewPill {
-    padding: 5px 10px;
-    font-size: var(--font-size-xs);
   }
 }

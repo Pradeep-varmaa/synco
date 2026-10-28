@@ -51,6 +51,25 @@
   gap: 16px;
 }
 
+.searchIconButton {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #475569;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.searchIconButton:hover {
+  background-color: var(--color-bg-muted);
+  color: var(--color-primary);
+}
+
 @media (max-width: 768px) {
   .topbar {
     padding: 0 16px;
