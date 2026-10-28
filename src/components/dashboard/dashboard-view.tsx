@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 import {
   CheckSquare,
   Calendar,
@@ -13,6 +14,7 @@ import { CalendarEventItem } from '@/app/api/events/route';
 import styles from './dashboard.module.css';
 
 export default function DashboardView() {
+  const { data: session } = useSession();
   const [tasks, setTasks] = useState<TaskItem[]>([]);
   const [events, setEvents] = useState<CalendarEventItem[]>([]);
   const [notesCount, setNotesCount] = useState(0);
@@ -40,8 +42,9 @@ export default function DashboardView() {
       .catch((e) => console.error(e));
   }, []);
 
+  const userName = session?.user?.name || '';
   const pendingTasks = tasks.filter((t) => t.status !== 'COMPLETED');
-  const delegatedTasks = tasks.filter((t) => t.assigneeName !== 'Praveen Kumar');
+  const delegatedTasks = tasks.filter((t) => userName ? t.assigneeName !== userName : false);
 
   return (
     <div className={styles.dashboardContainer}>

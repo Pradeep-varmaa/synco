@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
+import { getCurrentUser } from '@/lib/current-user';
+import { DUMMY_EVENTS } from '@/lib/dummy-data';
 
 export interface CalendarEventItem {
   id: string;
@@ -15,8 +17,18 @@ export interface CalendarEventItem {
 }
 
 export async function GET() {
+  const currentUser = await getCurrentUser();
+
+  if (!currentUser) {
+    return NextResponse.json([]);
+  }
+
   try {
-    const res = await query('SELECT * FROM calendar_events ORDER BY start_time ASC');
+    const res = await query(
+      'SELECT * FROM calendar_events WHERE user_id::text = $1 ORDER BY start_time ASC',
+      [currentUser.id]
+    );
+
     if (res && res.rows.length > 0) {
       const formatted: CalendarEventItem[] = res.rows.map((r) => ({
         id: String(r.id),
@@ -36,11 +48,17 @@ export async function GET() {
     console.error('Database query for calendar_events failed:', err);
   }
 
-  // Return empty array when no events exist in database
-  return NextResponse.json([]);
+  // Fallback to user-isolated dummy events if DB is empty or unreachable
+  const userDummyEvents = DUMMY_EVENTS.filter((e) => e.userId === currentUser.id);
+  return NextResponse.json(userDummyEvents);
 }
 
 export async function POST(req: Request) {
+  const currentUser = await getCurrentUser();
+  if (!currentUser) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
     const body = await req.json();
     const { title, start, end, allDay, color, meetingUrl, guestsCount, description } = body;
@@ -48,10 +66,11 @@ export async function POST(req: Request) {
     const eventColor = color || '#0c8388';
 
     const dbRes = await query(
-      `INSERT INTO calendar_events (title, description, start_time, end_time, all_day, meeting_url, color, guests_count)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      `INSERT INTO calendar_events (user_id, title, description, start_time, end_time, all_day, meeting_url, color, guests_count)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
        RETURNING *`,
       [
+        currentUser.id,
         title || 'Untitled Event',
         description || '',
         start,
@@ -82,23 +101,21 @@ export async function POST(req: Request) {
       });
     }
 
-    return NextResponse.json(
-      {
-        success: true,
-        event: {
-          id: Date.now().toString(),
-          title: title || 'Untitled Event',
-          start,
-          end: end || start,
-          allDay: Boolean(allDay),
-          backgroundColor: eventColor,
-          borderColor: eventColor,
-          meetingUrl: meetingUrl || '',
-          guestsCount: guestsCount || 1,
-          description: description || '',
-        },
-      }
-    );
+    return NextResponse.json({
+      success: true,
+      event: {
+        id: `evt-${Date.now()}`,
+        title: title || 'Untitled Event',
+        start,
+        end: end || start,
+        allDay: Boolean(allDay),
+        backgroundColor: eventColor,
+        borderColor: eventColor,
+        meetingUrl: meetingUrl || '',
+        guestsCount: guestsCount || 1,
+        description: description || '',
+      },
+    });
   } catch (error) {
     console.error('Failed to create event:', error);
     return NextResponse.json({ error: 'Failed to create event' }, { status: 500 });

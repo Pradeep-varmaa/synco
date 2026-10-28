@@ -1,10 +1,16 @@
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
+import { getCurrentUser } from '@/lib/current-user';
 
 export async function PUT(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const currentUser = await getCurrentUser();
+  if (!currentUser) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
     const { id } = await params;
     const body = await req.json();
@@ -21,9 +27,9 @@ export async function PUT(
            description = COALESCE($7, description),
            guests_count = COALESCE($8, guests_count),
            updated_at = CURRENT_TIMESTAMP
-       WHERE id = $9
+       WHERE id = $9 AND (user_id::text = $10 OR user_id IS NULL)
        RETURNING *`,
-      [start, end, allDay, title, color, meetingUrl, description, guestsCount, id]
+      [start, end, allDay, title, color, meetingUrl, description, guestsCount, id, currentUser.id]
     );
 
     if (dbRes && dbRes.rows.length > 0) {
@@ -41,9 +47,17 @@ export async function DELETE(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const currentUser = await getCurrentUser();
+  if (!currentUser) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
     const { id } = await params;
-    await query('DELETE FROM calendar_events WHERE id = $1', [id]);
+    await query('DELETE FROM calendar_events WHERE id = $1 AND (user_id::text = $2 OR user_id IS NULL)', [
+      id,
+      currentUser.id,
+    ]);
     return NextResponse.json({ success: true, deletedId: id });
   } catch (error) {
     console.error('Failed to delete event:', error);

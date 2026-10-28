@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name VARCHAR(255),
     email VARCHAR(255),
+    password VARCHAR(255),
     image TEXT,
     role VARCHAR(50) DEFAULT 'Member',
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -101,6 +102,17 @@ CREATE TABLE IF NOT EXISTS notes (
     category VARCHAR(100) DEFAULT 'General',
     is_pinned BOOLEAN DEFAULT FALSE,
     color VARCHAR(50) DEFAULT '#ffffff',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 9. Mail Templates Table (Dynamic email notification templates)
+CREATE TABLE IF NOT EXISTS mail_templates (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name VARCHAR(100) UNIQUE,
+    subject VARCHAR(255),
+    body TEXT,
+    variables TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );

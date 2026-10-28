@@ -12,7 +12,6 @@ import {
   CheckCircle2,
   Calendar,
   Layers,
-  Sparkles,
 } from 'lucide-react';
 import styles from './login.module.css';
 
@@ -21,8 +20,8 @@ function LoginContent() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl') || '/';
 
-  const [email, setEmail] = useState('praveen@synco.app');
-  const [password, setPassword] = useState('password123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -55,30 +54,6 @@ function LoginContent() {
 
   const handleGoogleSignIn = () => {
     signIn('google', { callbackUrl });
-  };
-
-  const handleQuickDemoSignIn = async () => {
-    setIsLoading(true);
-    setErrorMessage('');
-
-    try {
-      const res = await signIn('credentials', {
-        email: 'praveen@synco.app',
-        password: 'password123',
-        redirect: false,
-        callbackUrl,
-      });
-
-      if (!res?.error) {
-        router.push(callbackUrl);
-      } else {
-        setErrorMessage('Demo authentication failed. Please try again.');
-      }
-    } catch {
-      setErrorMessage('Could not sign in with demo credentials.');
-    } finally {
-      setIsLoading(false);
-    }
   };
 
   return (
@@ -168,7 +143,7 @@ function LoginContent() {
                   className={styles.textInput}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="name@example.com"
+                  placeholder="you@organization.com"
                   required
                   autoComplete="email"
                 />
@@ -189,7 +164,7 @@ function LoginContent() {
                   className={styles.textInput}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
+                  placeholder="Enter your password"
                   required
                   autoComplete="current-password"
                 />
@@ -260,16 +235,6 @@ function LoginContent() {
                 />
               </svg>
               <span>Continue with Google</span>
-            </button>
-
-            <button
-              type="button"
-              className={styles.demoButton}
-              onClick={handleQuickDemoSignIn}
-              disabled={isLoading}
-            >
-              <Sparkles size={16} />
-              <span>Quick Demo Sign In (Praveen Kumar)</span>
             </button>
           </div>
 

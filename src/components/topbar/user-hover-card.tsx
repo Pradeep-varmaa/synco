@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useSession, signOut } from 'next-auth/react';
 import { User, Settings, LogOut, Calendar } from 'lucide-react';
 import styles from './user-card.module.css';
 
@@ -11,20 +12,27 @@ interface UserHoverCardProps {
 }
 
 export default function UserHoverCard({
-  userName = 'Praveen Kumar',
-  userEmail = 'praveen@synco.app',
-  role = 'Workspace Admin',
+  userName: defaultUserName = 'User',
+  userEmail: defaultUserEmail = 'user@synco.app',
+  role: defaultRole = 'Member',
 }: UserHoverCardProps) {
+  const { data: session } = useSession();
   const [isOpen, setIsOpen] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
   const [pendingTasksCount, setPendingTasksCount] = useState(0);
   const [eventsCount, setEventsCount] = useState(0);
+
+  const userName = session?.user?.name || defaultUserName;
+  const userEmail = session?.user?.email || defaultUserEmail;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const role = (session?.user as any)?.role || defaultRole;
 
   useEffect(() => {
     fetch('/api/tasks')
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           setPendingTasksCount(data.filter((t: any) => t.status !== 'COMPLETED').length);
         }
       })
@@ -58,6 +66,10 @@ export default function UserHoverCard({
     }
   };
 
+  const handleSignOut = () => {
+    signOut({ callbackUrl: '/login' });
+  };
+
   return (
     <div
       className={styles.userCardWrapper}
@@ -76,7 +88,7 @@ export default function UserHoverCard({
           <span className={styles.profileDisplayName} title={userName}>
             {userName}
           </span>
-          <span className={styles.profileSubRole}>Workspace Admin</span>
+          <span className={styles.profileSubRole}>{role}</span>
         </div>
       </div>
 
@@ -97,7 +109,7 @@ export default function UserHoverCard({
           </div>
           <div className={styles.statItem}>
             <span className={styles.statNumber}>{eventsCount}</span>
-            <span className={styles.statLabel}>Today's Events</span>
+            <span className={styles.statLabel}>Today&apos;s Events</span>
           </div>
         </div>
 
@@ -131,7 +143,11 @@ export default function UserHoverCard({
             <Settings size={16} />
             <span>Preferences</span>
           </button>
-          <button type="button" className={`${styles.actionButton} ${styles.actionDanger}`}>
+          <button
+            type="button"
+            className={`${styles.actionButton} ${styles.actionDanger}`}
+            onClick={handleSignOut}
+          >
             <LogOut size={16} />
             <span>Sign Out</span>
           </button>

@@ -1,16 +1,21 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 import { Plus, X, Calendar, Trash2 } from 'lucide-react';
 import { TaskItem } from '@/app/api/tasks/route';
 import { TeamMember } from '@/app/api/team/route';
 import styles from './tasks.module.css';
 
 export default function TasksBoard() {
+  const { data: session } = useSession();
   const [tasks, setTasks] = useState<TaskItem[]>([]);
   const [team, setTeam] = useState<TeamMember[]>([]);
   const [filter, setFilter] = useState<'ALL' | 'MY_TASKS' | 'ASSIGNED_TO_OTHERS'>('ALL');
   const [modalOpen, setModalOpen] = useState(false);
+
+  const currentUserName = session?.user?.name || '';
+  const currentUserEmail = session?.user?.email || '';
 
   // Form State for New Task
   const [title, setTitle] = useState('');
@@ -40,7 +45,8 @@ export default function TasksBoard() {
       if (Array.isArray(data)) {
         setTeam(data);
         if (data.length > 0 && !assigneeId) {
-          setAssigneeId(data[0].id);
+          const me = data.find((m) => m.email?.toLowerCase() === currentUserEmail.toLowerCase());
+          setAssigneeId(me ? me.id : data[0].id);
         }
       }
     } catch (e) {
@@ -102,10 +108,18 @@ export default function TasksBoard() {
 
   const filteredTasks = tasks.filter((t) => {
     if (filter === 'MY_TASKS') {
-      return t.assigneeName === 'Praveen Kumar';
+      return (
+        t.assigneeName === currentUserName ||
+        t.assigneeName === 'Assigned to me' ||
+        (t.assigneeName && currentUserName && t.assigneeName.toLowerCase().includes(currentUserName.toLowerCase()))
+      );
     }
     if (filter === 'ASSIGNED_TO_OTHERS') {
-      return t.assigneeName !== 'Praveen Kumar';
+      return (
+        t.assigneeName !== currentUserName &&
+        t.assigneeName !== 'Assigned to me' &&
+        (!currentUserName || !t.assigneeName.toLowerCase().includes(currentUserName.toLowerCase()))
+      );
     }
     return true;
   });

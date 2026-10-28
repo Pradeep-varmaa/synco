@@ -2,6 +2,7 @@ import React, { Suspense } from 'react';
 import type { Metadata } from 'next';
 import './globals.css';
 import AppShell from '@/components/layout/app-shell';
+import SessionProvider from '@/components/providers/session-provider';
 
 export const metadata: Metadata = {
   title: 'SYNCO ',
@@ -19,9 +20,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Suspense fallback={null}>
-          <AppShell>{children}</AppShell>
-        </Suspense>
+        <SessionProvider>
+          <Suspense fallback={null}>
+            <AppShell>{children}</AppShell>
+          </Suspense>
+        </SessionProvider>
       </body>
     </html>
   );
