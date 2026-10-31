@@ -8,6 +8,8 @@ import {
   CalendarDays,
   CheckSquare,
   FileText,
+  Mail,
+  User,
   Settings,
   X,
   Sparkles,
@@ -52,6 +54,8 @@ export default function Sidebar({
       badge: pendingTasksCount > 0 ? pendingTasksCount : undefined,
     },
     { id: 'notes', label: 'Notes', href: '/notes', icon: <FileText size={20} /> },
+    { id: 'customers', label: 'Customers', href: '/customers', icon: <Mail size={20} /> },
+    { id: 'profile', label: 'Profile', href: '/profile', icon: <User size={20} /> },
     { id: 'settings', label: 'Settings', href: '/settings', icon: <Settings size={20} /> },
   ];
 

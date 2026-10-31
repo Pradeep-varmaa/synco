@@ -55,6 +55,21 @@ export interface DummyNote {
   createdAt: string;
 }
 
+export interface DummyCustomerEmail {
+  id: string;
+  userId: string;
+  senderName: string;
+  senderEmail: string;
+  customerName: string;
+  customerEmail: string;
+  customerCompany: string;
+  subject: string;
+  body: string;
+  htmlContent: string;
+  status: 'SENT' | 'DELIVERED';
+  createdAt: string;
+}
+
 const BCRYPT_SYNCO_123 = '$2b$10$on3jNEEkzuEK.nOhz2Rx2.tu0Xw4fYUcIR.pE/CW2wT3R6yvu1d6S';
 
 export const DUMMY_USERS: DummyUser[] = [
@@ -346,3 +361,85 @@ export const DUMMY_NOTES: DummyNote[] = [
     createdAt: new Date().toISOString(),
   },
 ];
+
+export const DUMMY_CUSTOMER_EMAILS: DummyCustomerEmail[] = [
+  // Vishal's customer emails
+  {
+    id: 'mail-vis-1',
+    userId: 'c64660fa-bad7-43ca-b82c-a19f126b1430',
+    senderName: 'Vishal',
+    senderEmail: 'vishal@gmail.com',
+    customerName: 'Sarah Jenkins',
+    customerEmail: 'sarah.jenkins@acmecorp.com',
+    customerCompany: 'Acme Corporation',
+    subject: 'SYNCO Product Roadmap & Enterprise Beta Access',
+    body: `Hi Sarah,\n\nThank you for taking the time to discuss your team's workflow requirements last Tuesday. I am pleased to share that Acme Corporation has been granted early beta access to our Google Calendar bi-directional sync and custom task delegation system.\n\nPlease find your access credentials in your customer dashboard or let us know if you need a walkthrough call with our solutions team.\n\nBest regards,`,
+    htmlContent: '',
+    status: 'DELIVERED',
+    createdAt: new Date(Date.now() - 2 * 24 * 3600 * 1000).toISOString(),
+  },
+  {
+    id: 'mail-vis-2',
+    userId: 'c64660fa-bad7-43ca-b82c-a19f126b1430',
+    senderName: 'Vishal',
+    senderEmail: 'vishal@gmail.com',
+    customerName: 'David Chen',
+    customerEmail: 'david.chen@innovatetech.io',
+    customerCompany: 'InnovateTech',
+    subject: 'SYNCO Q4 Release Notes & Feedback Session',
+    body: `Hello David,\n\nWe have just deployed our October performance enhancements including responsive calendar grid rendering and fine-grained role permissions.\n\nWe would love to get your feedback on how the team management module performs with your team. Feel free to reply directly to this mail.\n\nWarm regards,`,
+    htmlContent: '',
+    status: 'SENT',
+    createdAt: new Date(Date.now() - 4 * 3600 * 1000).toISOString(),
+  },
+
+  // Rajeswar's customer emails
+  {
+    id: 'mail-raj-1',
+    userId: '975d418b-1d7d-4682-b24f-e19abd528e6c',
+    senderName: 'Rajeswar',
+    senderEmail: 'rajeswar@gmail.com',
+    customerName: 'Elena Rostova',
+    customerEmail: 'elena@apexlogistics.com',
+    customerCompany: 'Apex Logistics',
+    subject: 'Architecture & Database Integration Walkthrough',
+    body: `Hi Elena,\n\nFollowing our review meeting on Neon PostgreSQL pooling and index optimizations, we have verified that your dedicated tenant database connections are fully stabilized.\n\nAll metrics are reporting sub-50ms latencies across calendar and task updates. Let us know if you would like to review the query performance dashboard.\n\nBest regards,`,
+    htmlContent: '',
+    status: 'DELIVERED',
+    createdAt: new Date(Date.now() - 24 * 3600 * 1000).toISOString(),
+  },
+  {
+    id: 'mail-raj-2',
+    userId: '975d418b-1d7d-4682-b24f-e19abd528e6c',
+    senderName: 'Rajeswar',
+    senderEmail: 'rajeswar@gmail.com',
+    customerName: 'Marcus Vance',
+    customerEmail: 'marcus@vancetech.com',
+    customerCompany: 'Vance Technologies',
+    subject: 'Security & Bcrypt Encryption Compliance Audit',
+    body: `Dear Marcus,\n\nWe have completed our security audit confirming that all customer workspaces utilize salted Bcrypt password hashing (10 rounds) and strict session tokens.\n\nYour compliance package has been updated accordingly.\n\nRegards,`,
+    htmlContent: '',
+    status: 'SENT',
+    createdAt: new Date(Date.now() - 5 * 3600 * 1000).toISOString(),
+  },
+
+  // Varma's customer emails
+  {
+    id: 'mail-var-1',
+    userId: '8b9d4ce4-49f4-4cee-be47-cc3c1a846887',
+    senderName: 'Varma',
+    senderEmail: 'varma@gmail.com',
+    customerName: 'Liam O\'Connor',
+    customerEmail: 'liam@celticsystems.ie',
+    customerCompany: 'Celtic Systems',
+    subject: 'New Modern Calendar UI & Multi-Color Task Highlighting',
+    body: `Hello Liam,\n\nI am thrilled to announce that the new calendar interface with dynamic multi-color task highlighting and quick scheduling modals is now live on your instance!\n\nYou can now see distinct colors assigned per task across your week and month views.\n\nEnjoy the new experience!`,
+    htmlContent: '',
+    status: 'DELIVERED',
+    createdAt: new Date(Date.now() - 12 * 3600 * 1000).toISOString(),
+  },
+];
+
+export function addDummyCustomerEmail(email: DummyCustomerEmail) {
+  DUMMY_CUSTOMER_EMAILS.unshift(email);
+}

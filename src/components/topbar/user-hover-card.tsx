@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
 import { User, Settings, LogOut, Calendar } from 'lucide-react';
 import styles from './user-card.module.css';
@@ -131,18 +132,30 @@ export default function UserHoverCard({
         </div>
 
         <div className={styles.boardActions}>
-          <button type="button" className={styles.actionButton}>
+          <Link
+            href="/profile"
+            className={styles.actionButton}
+            onClick={() => setIsOpen(false)}
+          >
             <User size={16} />
             <span>Profile Details</span>
-          </button>
-          <button type="button" className={styles.actionButton}>
+          </Link>
+          <Link
+            href="/calendar"
+            className={styles.actionButton}
+            onClick={() => setIsOpen(false)}
+          >
             <Calendar size={16} />
             <span>Calendar Settings</span>
-          </button>
-          <button type="button" className={styles.actionButton}>
+          </Link>
+          <Link
+            href="/settings"
+            className={styles.actionButton}
+            onClick={() => setIsOpen(false)}
+          >
             <Settings size={16} />
             <span>Preferences</span>
-          </button>
+          </Link>
           <button
             type="button"
             className={`${styles.actionButton} ${styles.actionDanger}`}

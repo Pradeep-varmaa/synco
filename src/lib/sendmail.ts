@@ -209,3 +209,178 @@ export async function sendUserInvitationMail(params: {
     html,
   });
 }
+
+// Generate styled HTML body with the Branded Signature Card
+export function generateCustomerMailHtml(params: {
+  senderName: string;
+  senderEmail: string;
+  senderRole?: string;
+  senderDepartment?: string;
+  customerName: string;
+  customerCompany?: string;
+  subject: string;
+  body: string;
+}): string {
+  const {
+    senderName,
+    senderEmail,
+    senderRole = 'Solutions Specialist',
+    senderDepartment = 'Customer Success',
+    customerName,
+    customerCompany,
+    subject,
+    body,
+  } = params;
+
+  // Format body text with paragraphs
+  const paragraphs = body
+    .split('\n')
+    .filter((line) => line.trim().length > 0)
+    .map(
+      (line) =>
+        `<p style="margin: 0 0 16px 0; font-size: 15px; line-height: 1.65; color: #334155;">${line}</p>`
+    )
+    .join('');
+
+  return `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${subject}</title>
+</head>
+<body style="margin: 0; padding: 24px 0; background-color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+  <table cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width: 620px; margin: 0 auto; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);">
+    
+    <!-- Branded Header with SYNCO Fiery Theme -->
+    <tr>
+      <td style="background: linear-gradient(135deg, #11161d 0%, #1e293b 100%); padding: 24px 30px; border-bottom: 3px solid #ff5722;">
+        <table cellpadding="0" cellspacing="0" border="0" width="100%">
+          <tr>
+            <td style="vertical-align: middle;">
+              <table cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td style="vertical-align: middle; padding-right: 12px;">
+                    <!-- Logo Avatar / Badge -->
+                    <div style="width: 42px; height: 42px; border-radius: 10px; background: linear-gradient(135deg, #ff9800 0%, #ff5722 100%); display: inline-block; text-align: center; line-height: 42px; color: #ffffff; font-weight: 800; font-size: 20px; box-shadow: 0 2px 10px rgba(255, 87, 34, 0.45);">
+                      S
+                    </div>
+                  </td>
+                  <td style="vertical-align: middle;">
+                    <div style="font-size: 20px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1;">
+                      <span style="color: #ff9800;">SYN</span><span style="color: #ffffff;">CO</span>
+                    </div>
+                    <div style="font-size: 10px; font-weight: 700; letter-spacing: 0.12em; color: #94a3b8; text-transform: uppercase; margin-top: 2px;">
+                      TASK <span style="color: #ff5722;">|</span> CALENDAR <span style="color: #ff5722;">|</span> SYNC
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+            <td style="text-align: right; vertical-align: middle;">
+              <span style="display: inline-block; background-color: rgba(255, 87, 34, 0.15); border: 1px solid #ff5722; color: #ff9800; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 4px 10px; border-radius: 9999px;">
+                Verified Outreach
+              </span>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+
+    <!-- Main Message Body -->
+    <tr>
+      <td style="padding: 30px 32px 20px 32px; background-color: #ffffff;">
+        <div style="font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 18px;">
+          Dear ${customerName}${customerCompany ? ` (${customerCompany})` : ''},
+        </div>
+
+        ${paragraphs}
+
+        <!-- Branded Signature Card with Logo and Brand Colors Only -->
+        <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-top: 28px; background-color: #ffffff; border: 1.5px solid #ffedd5; border-left: 4px solid #ff5722; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 16px rgba(255, 87, 34, 0.07);">
+          <tr>
+            <td style="padding: 18px 22px;">
+              <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                <tr>
+                  <td style="width: 56px; vertical-align: middle; padding-right: 16px;">
+                    <div style="width: 52px; height: 52px; border-radius: 12px; background: linear-gradient(135deg, #11161d 0%, #1e293b 100%); border: 2px solid #ff5722; text-align: center; line-height: 50px; box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);">
+                      <span style="font-size: 22px; font-weight: 800; color: #ff5722; font-family: sans-serif;">S</span>
+                    </div>
+                  </td>
+                  <td style="vertical-align: middle;">
+                    <div style="font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 2px;">
+                      ${senderName}
+                    </div>
+                    <div style="font-size: 12px; font-weight: 700; color: #ff5722; letter-spacing: 0.03em; text-transform: uppercase; margin-bottom: 4px;">
+                      ${senderRole} <span style="color: #cbd5e1; font-weight: normal;">•</span> <span style="color: #475569;">${senderDepartment}</span>
+                    </div>
+                    <div style="font-size: 12px; color: #64748b; line-height: 1.4;">
+                      <a href="mailto:${senderEmail}" style="color: #ff5722; text-decoration: none; font-weight: 500;">${senderEmail}</a>
+                      <span style="color: #cbd5e1; margin: 0 6px;">|</span>
+                      <a href="https://synco.app" style="color: #0f172a; text-decoration: none; font-weight: 600;">synco.app</a>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Bottom Signature Branding Strip -->
+              <div style="margin-top: 14px; padding-top: 10px; border-top: 1px dashed #fed7aa; display: flex; align-items: center; justify-content: space-between;">
+                <span style="font-size: 11px; font-weight: 800; color: #ff5722; letter-spacing: 0.08em; text-transform: uppercase;">
+                  SYN<span style="color: #0f172a;">CO</span>
+                  <span style="font-size: 10px; color: #94a3b8; font-weight: 600; margin-left: 6px; letter-spacing: 0.05em;">TASK | CALENDAR | SYNC</span>
+                </span>
+                <span style="font-size: 11px; color: #ff5722; font-weight: 600;">
+                  An UP THREE Product
+                </span>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+
+    <!-- Footer Security Notice -->
+    <tr>
+      <td style="background-color: #f8fafc; padding: 18px 32px; border-top: 1px solid #edf2f7; text-align: center;">
+        <p style="margin: 0 0 6px 0; font-size: 12px; color: #64748b; font-weight: 500;">
+          Sent securely via SYNCO Customer Engagement Platform
+        </p>
+        <p style="margin: 0; font-size: 11px; color: #94a3b8;">
+          © ${new Date().getFullYear()} SYNCO • All-in-one Productivity & Calendar Synchronization
+        </p>
+      </td>
+    </tr>
+
+  </table>
+</body>
+</html>
+  `.trim();
+}
+
+// Customer email dispatch function
+export async function sendCustomerMail(params: {
+  senderName: string;
+  senderEmail: string;
+  senderRole?: string;
+  senderDepartment?: string;
+  customerName: string;
+  customerEmail: string;
+  customerCompany?: string;
+  subject: string;
+  body: string;
+}) {
+  const html = generateCustomerMailHtml(params);
+
+  const mailResult = await sendMail({
+    to: params.customerEmail,
+    subject: params.subject,
+    html,
+    text: `${params.body}\n\n--\n${params.senderName} (${params.senderRole || 'SYNCO Team'})\n${params.senderEmail}\nSYNCO - TASK | CALENDAR | SYNC`,
+  });
+
+  return {
+    ...mailResult,
+    html,
+  };
+}

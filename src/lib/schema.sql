@@ -116,3 +116,19 @@ CREATE TABLE IF NOT EXISTS mail_templates (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+
+-- 10. Customer Emails Table (Customer communications & sent history)
+CREATE TABLE IF NOT EXISTS customer_emails (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID,
+    sender_name VARCHAR(255),
+    sender_email VARCHAR(255),
+    customer_name VARCHAR(255),
+    customer_email VARCHAR(255) NOT NULL,
+    customer_company VARCHAR(255),
+    subject VARCHAR(255) NOT NULL,
+    body TEXT NOT NULL,
+    html_content TEXT NOT NULL,
+    status VARCHAR(50) DEFAULT 'SENT',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);

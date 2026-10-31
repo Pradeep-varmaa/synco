@@ -8,6 +8,9 @@ export interface CurrentUser {
   name: string;
   email: string;
   role: string;
+  department: string;
+  image?: string;
+  createdAt?: string;
 }
 
 export async function getCurrentUser(): Promise<CurrentUser | null> {
@@ -21,33 +24,30 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let id = (session.user as any).id as string | undefined;
 
-    // If ID is already in session token and is a valid UUID/string
-    if (id && id.length > 5) {
-      return {
-        id,
-        name: session.user.name || 'User',
-        email,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        role: (session.user as any).role || 'Member',
-      };
-    }
-
-    // Try resolving ID from database
+    // Check database first
     try {
       const dbRes = await query(
-        'SELECT id, name, email, role FROM users WHERE LOWER(email) = $1 LIMIT 1',
+        `SELECT u.id, u.name, u.email, u.role, u.image, u.created_at, tm.department
+         FROM users u
+         LEFT JOIN team_members tm ON tm.user_id = u.id OR LOWER(tm.email) = LOWER(u.email)
+         WHERE LOWER(u.email) = $1
+         LIMIT 1`,
         [email]
       );
       if (dbRes && dbRes.rows.length > 0) {
+        const row = dbRes.rows[0];
         return {
-          id: String(dbRes.rows[0].id),
-          name: dbRes.rows[0].name || session.user.name || 'User',
-          email: dbRes.rows[0].email,
-          role: dbRes.rows[0].role || 'Member',
+          id: String(row.id),
+          name: row.name || session.user.name || 'User',
+          email: row.email,
+          role: row.role || 'Member',
+          department: row.department || 'Engineering',
+          image: row.image || session.user.image || '',
+          createdAt: row.created_at instanceof Date ? row.created_at.toISOString() : row.created_at || '',
         };
       }
     } catch (e) {
-      console.warn('Could not query users table for ID:', e);
+      console.warn('Could not query users table for current user details:', e);
     }
 
     // Fallback to DUMMY_USERS
@@ -58,6 +58,9 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
         name: dummy.name,
         email: dummy.email,
         role: dummy.role,
+        department: dummy.department,
+        image: dummy.avatar,
+        createdAt: '2026-10-01T00:00:00.000Z',
       };
     }
 
@@ -67,6 +70,9 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
       email,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       role: (session.user as any).role || 'Member',
+      department: 'Engineering',
+      image: session.user.image || '',
+      createdAt: new Date().toISOString(),
     };
   } catch (err) {
     console.error('Error getting current user:', err);

@@ -17,7 +17,9 @@ const titlesByPath: Record<string, string> = {
   '/dashboard': 'Dashboard',
   '/tasks': 'Tasks & Delegation',
   '/notes': 'Notes',
+  '/customers': 'Customer Communications',
   '/settings': 'Settings',
+  '/profile': 'My Profile',
 };
 
 export default function AppShell({ children }: AppShellProps) {
